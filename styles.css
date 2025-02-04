@@ -1,0 +1,98 @@
+*, *::before, *::after {
+  box-sizing: border-box;
+}
+
+body {
+  font-size: 2rem;
+  margin: 0;
+  color: #f0efef;
+  background: linear-gradient(to right, #205e62ab, #2e8b57);
+}
+
+.span-two {
+  grid-column: span 2;
+}
+
+.App {
+  font-size: xxx-large;
+  font-style: italic;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin: 40px;
+}
+
+.calculator-grid {
+  display: grid;
+  justify-content: center;
+  align-content: bottom;
+  min-height: 670px;
+  grid-template-columns: repeat(4, 100px);
+  grid-template-rows: minmax(100px, auto) repeat(5, 100px);
+  gap: 1px;
+  background: #f0efef6c;
+  border-radius: 10px;
+  padding: 10px;
+  width: 100%;
+  max-width: fit-content;
+
+  margin: 0 auto;
+}
+
+.calculator-grid .output {
+  grid-column: 1 / -1;
+  background: #dedede;
+  color: #0f2c2e;
+  font-size: 50px;
+  font-weight: 300;
+  padding: 16px;
+  padding-right: 15px;
+  margin-bottom: 6px;
+  display: flex;
+  justify-content: flex-end;
+  align-items: flex-end;
+  flex-direction: column;
+  border-radius: 5px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.calculator-grid .output span {
+  font-size: 30px;
+  color: #233f63;
+}
+
+
+.calculator-grid button {
+  font-size: 2rem;
+  background: #ffffffa4;
+  border-radius: 10px;
+  cursor: pointer;
+  padding: 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100%;
+  width: 100%;
+}
+
+.calculator-grid button:hover {
+  background: #f7f7f7;
+}
+
+.calculator-grid .operation{
+  background: #ffd09bc5;
+}
+
+button.clear {
+  background: #ffa1a1c5;
+}
+
+button.delete {
+  background: #fff89bc5;
+}
+
+button.equal {
+  background: #9ac6ffc5;
+}
