@@ -72,94 +72,98 @@ function calculate(expression) {
 function reducer(state, { type, payload }) {
   switch (type) {
     case ACTIONS.ADD_DIGIT:
-      if (payload.digit === "(-)") {
-        const lastNumberMatch = state.equation.match(/-?\d+\.?\d*$/);
-        if (!lastNumberMatch) return state; // Keine Zahl gefunden
-      
-        const lastNumber = lastNumberMatch[0];
-      
-        // Verhindern, dass 0 oder -0 negativ werden
-        if (parseFloat(lastNumber) === 0 && !lastNumber.includes(".")) {
-          return state; // Keine Änderung, wenn es genau "0" ist
-        }
-      
-        const newNumber = (parseFloat(lastNumber) * -1).toString(); // Vorzeichen umkehren
-        const newEquation = state.equation.replace(/-?\d+\.?\d*$/, newNumber);
-      
-        return {
-          ...state,
-          currentOperand: newNumber,
-          equation: newEquation,
-          result: calculate(newEquation),
-        };
-      
-      }
-      if (payload.digit === ".") {
-        const operators = ["+", "-", "*", "÷"]; // Operatoren definieren
-        if (operators.includes(state.equation.slice(-1))) {
-          return {
-            ...state,
-            currentOperand: "0.",
-            equation: state.equation + "0.",
-            result: calculate(state.equation + "0."),
-          };
-        }
-      }
+  if (payload.digit === "(-)") {
+    const lastNumberMatch = state.equation.match(/-?\d+\.?\d*$/);
+    if (!lastNumberMatch) return state; // Keine Zahl gefunden
 
-    // Überschreiben des aktuellen Operanden nach einer Berechnung
-    if (state.overwrite) {
-      if (payload.digit !== ".") {
-        return {
-          ...state,
-          currentOperand: payload.digit,
-          equation: payload.digit,
-          result: payload.digit,
-          overwrite: false,
-        };
-      } else {
-        return state
-      }
+    const lastNumber = lastNumberMatch[0];
+
+    // Verhindern, dass 0 oder -0 negativ werden
+    if (parseFloat(lastNumber) === 0 && !lastNumber.includes(".")) {
+      return state; // Keine Änderung, wenn es genau "0" ist
     }
 
-    // Verhindert führende Nullen
-    if (state.equation === "0") {
-      if (payload.digit === ".") {
-        return {
-          ...state,
-          currentOperand: "0.",
-          equation: "0.",
-          result: "0.",
-        };
-      }
-      
+    const newNumber = (parseFloat(lastNumber) * -1).toString(); // Vorzeichen umkehren
+    const newEquation = state.equation.replace(/-?\d+\.?\d*$/, newNumber);
+
+    return {
+      ...state,
+      currentOperand: newNumber,
+      equation: newEquation,
+      result: calculate(newEquation),
+    };
+  }
+
+  if (payload.digit === ".") {
+    // Überprüfen, ob die aktuelle Zahl bereits eine Dezimalstelle enthält
+    const lastNumber = state.equation.split(/[-+*÷]/).pop();
+    if (lastNumber.includes(".")) {
+      return state; // Keine Änderung, wenn bereits eine Dezimalstelle vorhanden ist
+    }
+
+    // Wenn die Gleichung leer ist oder mit einem Operator endet, füge "0." hinzu
+    if (/[-+*÷ ]?$/.test(state.equation)) {
+      return {
+        ...state,
+        currentOperand: "0.",
+        equation: state.equation + "0.",
+        result: calculate(state.equation + "0."),
+      };
+    }
+
+    // Füge die Dezimalstelle zur aktuellen Zahl hinzu
+    return {
+      ...state,
+      currentOperand: state.currentOperand + ".",
+      equation: state.equation + ".",
+      result: calculate(state.equation + "."),
+    };
+  }
+
+  // Überschreiben des aktuellen Operanden nach einer Berechnung
+  if (state.overwrite) {
+    if (payload.digit !== ".") {
       return {
         ...state,
         currentOperand: payload.digit,
         equation: payload.digit,
         result: payload.digit,
+        overwrite: false,
+      };
+    } else {
+      return state;
+    }
+  }
+
+  // Verhindert führende Nullen
+  if (state.equation === "0") {
+    if (payload.digit === ".") {
+      return {
+        ...state,
+        currentOperand: "0.",
+        equation: "0.",
+        result: "0.",
       };
     }
 
-    // Verhindert mehrere Dezimalpunkte in derselben Zahl
-    const lastNumber = state.equation.split(/[-+*÷]/).pop();
-
-    if (payload.digit === "." && lastNumber.includes(".")) {
-      return state;
-    }
-    // Fügt eine führende Null hinzu, falls eine Zahl mit "." beginnt
-    const formattedDigit = payload.digit === "." && /[-+*÷ ]?$/.test(state.equation) ? "0." : payload.digit;
-
-    // Neue Gleichung erstellen
-    const newEquation = `${state.equation || ""}${formattedDigit}`;
-
-    
     return {
       ...state,
-      currentOperand: `${state.currentOperand || ""}${payload.digit}`,
-      equation: newEquation,
-      result: calculate(newEquation),
+      currentOperand: payload.digit,
+      equation: payload.digit,
+      result: payload.digit,
     };
+  }
 
+  // Neue Gleichung erstellen
+  const newEquation = `${state.equation || ""}${payload.digit}`;
+
+  return {
+    ...state,
+    currentOperand: `${state.currentOperand || ""}${payload.digit}`,
+    equation: newEquation,
+    result: calculate(newEquation),
+  };
+      
     case ACTIONS.CHOOSE_OPERATION:
       if (state.currentOperand == null && state.equation === "") {
         return state;
@@ -266,4 +270,5 @@ function App() {
   );
 }
 
-export default App;
+export default App; 
+
