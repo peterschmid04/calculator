@@ -102,6 +102,7 @@ function reducer(state, { type, payload }) {
         return state; // Keine Änderung, wenn bereits eine Dezimalstelle vorhanden ist
       }
 
+      
       if (operators.includes(lastChar) || state.equation === "" || state.equation === "0") {
         return {
           ...state,
