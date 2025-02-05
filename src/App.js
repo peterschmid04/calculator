@@ -18,55 +18,83 @@ const initialState = {
   overwrite: false,
 };
 
-function calculate(expression) {
-  const operators = { '+': 1, '-': 1, '*': 2, '÷': 2 };
-  const outputQueue = [];
-  const operatorStack = [];
-  const tokens = expression.match(/-?\d+\.?\d*|[+\-*÷]/g);
+function calculate(expression) { 
+  // Definieren der Operatoren und ihrer Priorität (1 = niedrig, 2 = hoch)
+  const operators = { '+': 1, '-': 1, '*': 2, '÷': 2 }; 
 
-  if (!tokens) return "0";
+  // Initialisieren der Ausgabewarteschlange (für die Postfix-Notation)
+  const outputQueue = []; 
 
-  tokens.forEach(token => {
-    if (!isNaN(token)) {
-      outputQueue.push(parseFloat(token));
-    } else if (operators[token]) {
+  // Stapel zur Verwaltung von Operatoren
+  const operatorStack = []; 
+
+  // Tokenisieren des Ausdrucks: Zahlen und Operatoren extrahieren
+  const tokens = expression.match(/-?\d+\.?\d*|[+\-*÷]/g); 
+
+  // Falls keine Tokens gefunden werden, Rückgabe von "0"
+  if (!tokens) return "0"; 
+
+  // Iteration über jedes Token im Ausdruck
+  tokens.forEach(token => { 
+    if (!isNaN(token)) { // Wenn das Token eine Zahl ist
+      outputQueue.push(parseFloat(token)); // In die Ausgabewarteschlange einfügen
+    } else if (operators[token]) { // Wenn das Token ein Operator ist
+      // Vergleich der Priorität des aktuellen Operators mit dem letzten im Stapel
       while (
         operatorStack.length &&
         operators[operatorStack[operatorStack.length - 1]] >= operators[token]
       ) {
-        outputQueue.push(operatorStack.pop());
+        outputQueue.push(operatorStack.pop()); // Operator mit höherer/gleicher Priorität in die Ausgabewarteschlange verschieben
       }
-      operatorStack.push(token);
+      operatorStack.push(token); // Aktuellen Operator auf den Stapel legen
     }
   });
 
+  // Alle verbleibenden Operatoren vom Stapel in die Ausgabewarteschlange verschieben
   while (operatorStack.length) {
     outputQueue.push(operatorStack.pop());
   }
 
-  const resultStack = [];
-  outputQueue.forEach(token => {
-    if (!isNaN(token)) {
-      resultStack.push(token);
-    } else {
-      const b = resultStack.pop();
-      const a = resultStack.pop();
+  // Stapel zur Berechnung des Ergebnisses aus der Postfix-Notation
+  const resultStack = []; 
+
+  outputQueue.forEach(token => { 
+    if (!isNaN(token)) { // Wenn das Token eine Zahl ist
+      resultStack.push(token); // Zahl auf den Stapel legen
+    } else { // Wenn das Token ein Operator ist
+      const b = resultStack.pop(); // Zweiter Operand
+      const a = resultStack.pop(); // Erster Operand
+
+      // Berechnung basierend auf dem Operator
       switch (token) {
-        case '+': resultStack.push(a + b); break;
-        case '-': resultStack.push(a - b); break;
-        case '*': resultStack.push(a * b); break;
+        case '+': 
+          resultStack.push(a + b); 
+          break;
+        case '-': 
+          resultStack.push(a - b); 
+          break;
+        case '*': 
+          resultStack.push(a * b); 
+          break;
         case '÷':
-          if (b === 0){
-            resultStack.push("Fehler");
+          if (b === 0) { 
+            resultStack.push("Fehler"); // Fehlerbehandlung für Division durch null
           } else {
-            resultStack.push(a / b);
-          } break; 
-        default: break;
+            resultStack.push(a / b); // Division durchführen
+          }
+          break;
+        default: 
+          break;
       }
     }
   });
 
-  return resultStack[0] || "0";
+  // Rundung des Ergebnisses auf 10 Nachkommastellen, um Floating-Point-Fehler zu vermeiden
+  const finalResult = resultStack[0];
+
+  return typeof finalResult === "number"
+    ? parseFloat(finalResult.toFixed(10)) // Konvertierung zu einer sauberen Zahl
+    : finalResult; // Falls ein Fehler (z.B. Division durch null), wird dieser direkt zurückgegeben
 }
 
 function reducer(state, { type, payload }) {
