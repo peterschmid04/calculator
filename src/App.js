@@ -97,6 +97,7 @@ function calculate(expression) {
     : finalResult; // Falls ein Fehler (z.B. Division durch null), wird dieser direkt zurückgegeben
 }
 
+
 function reducer(state, { type, payload }) {
   switch (type) {
     case ACTIONS.ADD_DIGIT:
@@ -123,7 +124,7 @@ function reducer(state, { type, payload }) {
 
     if (payload.digit === ".") {
       const operators = ["+", "-", "*", "÷"];
-      const lastChar = state.equation.trim().slice(-1); // Holt das letzte Zeichen der Gleichung
+      const lastChar = state.equation.trim().slice(-1); // Holt nur das letzte Zeichen der Gleichung
       const lastNumber = state.equation.split(/[-+*÷]/).pop(); // Letzte Zahl nach einem Operator
     
       //  Verhindern von doppelten Dezimalpunkten
