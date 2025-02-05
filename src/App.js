@@ -94,15 +94,16 @@ function reducer(state, { type, payload }) {
 
 
     if (payload.digit === ".") {
-      const lastChar = state.equation.slice(-1);
-      const operators = ['+', '-', '*', '÷'];
-      // Überprüfen, ob die aktuelle Zahl bereits eine Dezimalstelle enthält
-      const lastNumber = state.equation.split(/[-+*÷]/).pop();
+      const operators = ["+", "-", "*", "÷"];
+      const lastChar = state.equation.trim().slice(-1); // Holt das letzte Zeichen der Gleichung
+      const lastNumber = state.equation.split(/[-+*÷]/).pop(); // Letzte Zahl nach einem Operator
+    
+      //  Verhindern von doppelten Dezimalpunkten
       if (lastNumber.includes(".")) {
-        return state; // Keine Änderung, wenn bereits eine Dezimalstelle vorhanden ist
+        return state; // Kein zweiter Dezimalpunkt in derselben Zahl
       }
-
-      
+    
+      //  Nach einem Operator oder am Anfang → füge "0." hinzu
       if (operators.includes(lastChar) || state.equation === "" || state.equation === "0") {
         return {
           ...state,
@@ -111,11 +112,11 @@ function reducer(state, { type, payload }) {
           result: calculate(state.equation + "0."),
         };
       }
-      
-      // Füge die Dezimalstelle zur aktuellen Zahl hinzu
+    
+      //  Normales Hinzufügen des Dezimalpunkts
       return {
         ...state,
-        currentOperand: state.currentOperand + ".",
+        currentOperand: (state.currentOperand || "0") + ".",
         equation: state.equation + ".",
         result: calculate(state.equation + "."),
       };
