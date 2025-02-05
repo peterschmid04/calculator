@@ -72,53 +72,53 @@ function calculate(expression) {
 function reducer(state, { type, payload }) {
   switch (type) {
     case ACTIONS.ADD_DIGIT:
-  if (payload.digit === "(-)") {
-    const lastNumberMatch = state.equation.match(/-?\d+\.?\d*$/);
-    if (!lastNumberMatch) return state; // Keine Zahl gefunden
+    if (payload.digit === "(-)") {
+      const lastNumberMatch = state.equation.match(/-?\d+\.?\d*$/);
+      if (!lastNumberMatch) return state; // Keine Zahl gefunden
+      const lastNumber = lastNumberMatch[0];
 
-    const lastNumber = lastNumberMatch[0];
-
-    // Verhindern, dass 0 oder -0 negativ werden
-    if (parseFloat(lastNumber) === 0 && !lastNumber.includes(".")) {
-      return state; // Keine Änderung, wenn es genau "0" ist
-    }
-
-    const newNumber = (parseFloat(lastNumber) * -1).toString(); // Vorzeichen umkehren
-    const newEquation = state.equation.replace(/-?\d+\.?\d*$/, newNumber);
-
-    return {
-      ...state,
-      currentOperand: newNumber,
-      equation: newEquation,
-      result: calculate(newEquation),
-    };
-  }
-
-  if (payload.digit === ".") {
-    // Überprüfen, ob die aktuelle Zahl bereits eine Dezimalstelle enthält
-    const lastNumber = state.equation.split(/[-+*÷]/).pop();
-    if (lastNumber.includes(".")) {
-      return state; // Keine Änderung, wenn bereits eine Dezimalstelle vorhanden ist
-    }
-
-    // Wenn die Gleichung leer ist oder mit einem Operator endet, füge "0." hinzu
-    if (/[-+*÷ ]?$/.test(state.equation)) {
+      // Verhindern, dass 0 oder -0 negativ werden
+      if (parseFloat(lastNumber) === 0 && !lastNumber.includes(".")) {
+        return state; // Keine Änderung, wenn es genau "0" ist
+      }
+      const newNumber = (parseFloat(lastNumber) * -1).toString(); // Vorzeichen umkehren
+      const newEquation = state.equation.replace(/-?\d+\.?\d*$/, newNumber);
       return {
         ...state,
-        currentOperand: "0.",
-        equation: state.equation + "0.",
-        result: calculate(state.equation + "0."),
-      };
+        currentOperand: newNumber,
+        equation: newEquation,
+        result: calculate(newEquation),
+      };    
     }
 
-    // Füge die Dezimalstelle zur aktuellen Zahl hinzu
-    return {
-      ...state,
-      currentOperand: state.currentOperand + ".",
-      equation: state.equation + ".",
-      result: calculate(state.equation + "."),
-    };
-  }
+
+
+    if (payload.digit === ".") {
+      const lastChar = state.equation.slice(-1);
+      const operators = ['+', '-', '*', '÷'];
+      // Überprüfen, ob die aktuelle Zahl bereits eine Dezimalstelle enthält
+      const lastNumber = state.equation.split(/[-+*÷]/).pop();
+      if (lastNumber.includes(".")) {
+        return state; // Keine Änderung, wenn bereits eine Dezimalstelle vorhanden ist
+      }
+
+      if (operators.includes(lastChar) || state.equation === "" || state.equation === "0") {
+        return {
+          ...state,
+          currentOperand: "0.",
+          equation: (state.equation === "0" ? "" : state.equation) + "0.",
+          result: calculate(state.equation + "0."),
+        };
+      }
+      
+      // Füge die Dezimalstelle zur aktuellen Zahl hinzu
+      return {
+        ...state,
+        currentOperand: state.currentOperand + ".",
+        equation: state.equation + ".",
+        result: calculate(state.equation + "."),
+      };
+    }
 
   // Überschreiben des aktuellen Operanden nach einer Berechnung
   if (state.overwrite) {
