@@ -1,5 +1,4 @@
 import { useState } from "react";
-import { calculate } from "./utils/calculate";
 import { addDigit } from "./utils/addDigit";
 import { chooseOperation } from "./utils/chooseOperation";
 import { deleteDigit } from "./utils/deleteDigit";
