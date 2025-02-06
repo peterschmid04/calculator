@@ -1,6 +1,6 @@
-import { calculate } from "./calculate";
+import { calculate } from "./calculate.js";
 
-export function deleteDigit(state, payload) {
+export function deleteDigit(state) {
   if (state.overwrite) {
     return { ...state, overwrite: false, currentOperand: null, equation: "", result: "" };
   }

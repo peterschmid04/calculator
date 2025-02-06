@@ -1,10 +1,10 @@
 import { useState } from "react";
-import { addDigit } from "./utils/addDigit";
-import { chooseOperation } from "./utils/chooseOperation";
-import { deleteDigit } from "./utils/deleteDigit";
-import { evaluate } from "./utils/evaluate";
-import DigitButton from "./DigitButton";
-import OperationButton from "./OperationButton";
+import { addDigit } from "./utils/addDigit.js";
+import { chooseOperation } from "./utils/chooseOperation.js";
+import { deleteDigit } from "./utils/deleteDigit.js";
+import { evaluate } from "./utils/evaluate.js";
+import DigitButton from "./DigitButton.js";
+import OperationButton from "./OperationButton.js";
 import "./styles.css";
 
 function App() {
@@ -15,30 +15,29 @@ function App() {
     overwrite: false,
   });
 
-
   const handleClear = () => {
-    setCalcState((cur) => ({
+    setCalcState({
       equation: "0",
       currentOperand: null,
       result: "0",
       overwrite: false,
-    }));
+    });
   };
 
   const handleAddDigit = (digit) => {
-    setCalcState((cur) => addDigit(cur, { digit }));
+    setCalcState((cur) => addDigit(cur, digit));
   };
 
   const handleOperation = (operation) => {
-    setCalcState((cur) => chooseOperation(cur, { operation }));
+    setCalcState((cur) => chooseOperation(cur, operation));
   };
-  
+
   const handleDeleteDigit = () => {
-    setCalcState((cur) => deleteDigit(cur, {}));
+    setCalcState((cur) => deleteDigit(cur));
   };
-  
+
   const handleEvaluate = () => {
-    setCalcState((cur) => evaluate(cur, {}));
+    setCalcState((cur) => evaluate(cur));
   };
 
   return (
@@ -49,8 +48,12 @@ function App() {
           <div className="history">{calcState.equation}</div>
           <span className="current-operand">{calcState.result}</span>
         </div>
-        <button className="clear" onClick={handleClear}>AC</button>
-        <button className="delete" onClick={handleDeleteDigit}>DEL</button>
+        <button className="clear" onClick={handleClear}>
+          AC
+        </button>
+        <button className="delete" onClick={handleDeleteDigit}>
+          DEL
+        </button>
         <DigitButton digit="(-)" onClick={handleAddDigit} />
         <OperationButton operation="÷" onClick={handleOperation} />
         <OperationButton operation="*" onClick={handleOperation} />
@@ -67,15 +70,15 @@ function App() {
         <DigitButton digit="3" onClick={handleAddDigit} />
         <DigitButton digit="0" onClick={handleAddDigit} />
         <DigitButton digit="." onClick={handleAddDigit} />
-        <button className="equal" onClick={handleEvaluate}>=</button>
+        <button className="equal" onClick={handleEvaluate}>
+          =
+        </button>
       </div>
     </div>
   );
 }
 
-
 export default App;
-
 
 // function calculate(expression) {
 //   // Definieren der Operatoren und ihrer Priorität (1 = niedrig, 2 = hoch)
