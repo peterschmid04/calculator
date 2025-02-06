@@ -1,13 +1,13 @@
-import { ACTIONS } from "./App"
+import React from "react";
 
-export default function OperationButton({ dispatch, operation }) {
+export default function OperationButton({ onClick, operation }) {
   return (
-    <button className="operation"
-      onClick={() =>
-        dispatch({ type: ACTIONS.CHOOSE_OPERATION, payload: { operation } })
-      }
+    <button 
+      className="operation"
+      data-operation={operation}
+      onClick={() => onClick(operation)}
     >
       {operation}
     </button>
-  )
+  );
 }

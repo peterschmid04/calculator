@@ -9,10 +9,6 @@ body {
   background: linear-gradient(to right, #205e62ab, #2e8b57);
 }
 
-.span-two {
-  grid-column: span 2;
-}
-
 .App {
   font-size: xxx-large;
   font-style: italic;
@@ -26,9 +22,9 @@ body {
   display: grid;
   justify-content: center;
   align-content: bottom;
-  min-height: 670px;
-  grid-template-columns: repeat(4, 100px);
-  grid-template-rows: minmax(100px, auto) repeat(5, 100px);
+  min-height: 570px;
+  grid-template-columns: repeat(6, 100px);
+  grid-template-rows: minmax(100px, auto) repeat(4, 100px);
   gap: 1px;
   background: #f0efef6c;
   border-radius: 10px;
@@ -80,18 +76,35 @@ body {
   background: #f7f7f7;
 }
 
-.calculator-grid .operation{
-  background: #ffd09bc5;
+.calculator-grid button[data-operation="-"] {
+  background: rgb(141, 234, 141) ;
+  grid-row: span 2;
+}
+
+.calculator-grid button[data-operation="÷"] {
+  background: #ffd09bc5 ;
+}
+
+.calculator-grid button[data-operation="*"] {
+  background: lightblue ;
+  grid-column: span 2;
+  
+}
+
+.calculator-grid button[data-operation="+"] {
+  background: lightcoral;
+  grid-column: span 2;
+  grid-row: span 2;
 }
 
 button.clear {
-  background: #ffa1a1c5;
+  background: #f7ff9ac5;
 }
 
 button.delete {
-  background: #fff89bc5;
+  background: #f7ff9ac5;
 }
 
 button.equal {
-  background: #9ac6ffc5;
+  background: #f7ff9ac5;
 }
